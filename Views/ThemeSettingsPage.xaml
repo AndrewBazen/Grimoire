@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Grimoire.Views.ThemeSettingsPage"
+             xmlns:viewModels="clr-namespace:Grimoire.ViewModels"
+             xmlns:services="clr-namespace:Grimoire.Services"
+             Title="Theme Settings"
+             Loaded="ContentPage_Loaded"
+             x:DataType="viewModels:ThemeViewModel">
+
+    <ContentPage.BindingContext>
+        <viewModels:ThemeViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+        <Label 
+            Text="Choose a Theme"
+            FontSize="24"
+            HorizontalOptions="Center" />
+            
+        <CollectionView x:Name="ThemesCollection"
+                        ItemsSource="{Binding AvailableThemes}"
+                        SelectionMode="Single"
+                        SelectionChangedCommand="{Binding SelectThemeCommand}"
+                        SelectionChangedCommandParameter="{Binding x:DataType='CollectionView', Source={RelativeSource Self}, Path=SelectedItem}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="viewModels:ThemeViewModel">
+                    <Grid Padding="10" Margin="0,5">
+                        <Border StrokeShape="RoundRectangle 10" Stroke="{StaticResource Gray300}" Padding="10">
+                            <Grid ColumnDefinitions="Auto,*,Auto" Padding="10">
+                                <Ellipse 
+                                    Grid.Column="0"
+                                    Fill="{Binding Primary}"
+                                    WidthRequest="40"
+                                    HeightRequest="40" />
+                                    
+                                <VerticalStackLayout Grid.Column="1" Margin="15,0">
+                                    <Label 
+                                        Text="{Binding Name}" 
+                                        FontSize="18"
+                                        FontAttributes="Bold" />
+                                    <Label 
+                                        Text="{Binding IsDark, StringFormat='Dark mode: {0}'}" 
+                                        FontSize="14" />
+                                </VerticalStackLayout>
+                                
+                                <RadioButton 
+                                    Grid.Column="2"
+                                    x:Name="ThemeRadioButton"
+                                    GroupName="ThemeGroup"
+                                    IsChecked="{Binding IsSelected}"
+                                    CheckedChanged="OnThemeRadioButtonChecked" />
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage> 
