@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Grimoire.Presentation.ViewModels"
+             xmlns:ports="clr-namespace:Grimoire.Domain.Ports"
+             x:Class="Grimoire.Presentation.Views.StartPage"
+             x:Name="startPage"
+             Title="Start Page"
+             x:DataType="viewModels:StartViewModel"
+             BackgroundColor="{DynamicResource Surface}"
+             Padding="10"
+             >
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding CreateNewArchiveCommand}"
+                     IconImageSource="add.png"
+                     Text="New Archive" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Centered Welcome Prompt -->
+            <Frame Grid.Row="1" Grid.Column="1" Padding="30" CornerRadius="16" BackgroundColor="{DynamicResource Surface}" HasShadow="True">
+                <VerticalStackLayout Spacing="20" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="Welcome to Grimoire" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label Text="Select an archive to open, or create a new one." FontSize="16" HorizontalOptions="Center" />
+                    <CollectionView ItemsSource="{Binding Archives}"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedArchive, Mode=TwoWay}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="ports:IArchive">
+                                <SwipeView>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem Text="Rename" Command="{Binding Source={x:Reference startPage}, Path=BindingContext.RenameArchiveCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource Info}" />
+                                            <SwipeItem Text="Delete" Command="{Binding Source={x:Reference startPage}, Path=BindingContext.DeleteArchiveCommand}" CommandParameter="{Binding .}" BackgroundColor="{DynamicResource Error}" />
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <Frame Padding="10" BackgroundColor="{DynamicResource Surface}" Margin="0,0,0,10" CornerRadius="8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Text="{Binding Name}" FontSize="18" />
+                                            <Label Text="{Binding UpdatedAt, StringFormat='{0:MMM dd, yyyy HH:mm}'}" FontSize="12" TextColor="{DynamicResource SubtleTextStyle}" Grid.Column="1" />
+                                        </Grid>
+                                    </Frame>
+                                </SwipeView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <HorizontalStackLayout Spacing="16" HorizontalOptions="Center">
+                        <Button Text="New Archive" Command="{Binding CreateNewArchiveCommand}" />
+                        <Button Text="Open" Command="{Binding OpenArchiveCommand}" IsEnabled="{Binding SelectedArchive, Converter={StaticResource IsNotNullConverter}}" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,6 +1,4 @@
-﻿using System;
-using Grimoire.Views;
-using Grimoire.Components.UI;
+﻿using Grimoire.Presentation.Views;
 
 namespace Grimoire;
 
@@ -11,8 +9,8 @@ public partial class AppShell : Shell
 		InitializeComponent();
 		
 		// Register routes for navigation
-		Routing.RegisterRoute(nameof(ArchivePage), typeof(ArchivePage));
-		Routing.RegisterRoute(nameof(ThemeSettingsPage), typeof(ThemeSettingsPage));
-
+		Routing.RegisterRoute("startPage", typeof(StartPage));
+		Routing.RegisterRoute("themeSettingsPage", typeof(ThemeSettingsPage));
+		Routing.RegisterRoute("archive", typeof(ArchivePage));
 	}
 }

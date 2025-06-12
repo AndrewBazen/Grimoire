@@ -8,8 +8,17 @@
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:Views.ArchivePage}"
-        Route="ArchivePage"/>
+        ContentTemplate="{DataTemplate local:Presentation.Views.StartPage}"
+        Route="startPage"/>
 
+    <ShellContent
+        Title="Theme Settings"
+        ContentTemplate="{DataTemplate local:Presentation.Views.ThemeSettingsPage}"
+        Route="themeSettingsPage"/>
+
+    <ShellContent
+        Title="Archive"
+        ContentTemplate="{DataTemplate local:Presentation.Views.ArchivePage}"
+        Route="archive"/>
 
 </Shell>

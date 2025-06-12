@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"  
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+             xmlns:viewModels="clr-namespace:Grimoire.Presentation.ViewModels"  
+             xmlns:models="clr-namespace:Grimoire.Domain.Models"
+             x:Class="Grimoire.Presentation.Views.ArchivePage"  
+             x:Name="archivePage"
+             Title="Grimoire Archive"  
+             x:DataType="viewModels:WorkspaceViewModel"
+             BackgroundColor="{DynamicResource Background}">
+
+    <ContentPage.ToolbarItems>  
+        <ToolbarItem Command="{Binding CreateNewTomeCommand}"  
+                     IconImageSource="add.png"  
+                     Text="Create Tome" />  
+        <ToolbarItem Command="{Binding CreateNewEntryCommand}"  
+                     IconImageSource="add.png"  
+                     Text="New Entry"  
+                     IsEnabled="{Binding ArchiveViewModel.SelectedTome, Converter={StaticResource IsNotNullConverter}}" />  
+    </ContentPage.ToolbarItems>  
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" /> <!-- Sidebar -->
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="260" /> <!-- Tomes/Archive -->
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="*" />   <!-- Entries/Editor -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar: Current Archive -->
+        <StackLayout Grid.Column="0" Padding="10" BackgroundColor="{DynamicResource Surface}">
+            <Label Text="Vault" Style="{DynamicResource HeaderLabelStyle}" />
+            <Label Text="{Binding CurrentArchive.Name}" FontAttributes="Bold" FontSize="18" />
+        </StackLayout>
+
+        <BoxView Grid.Column="1" Color="{DynamicResource RuneGray}" />
+
+        <!-- Archive/Tomes -->
+        <ContentView Grid.Column="2" BindingContext="{Binding ArchiveViewModel}" x:DataType="viewModels:ArchiveViewModel">
+            <StackLayout>
+                <Label Text="Tomes" Style="{DynamicResource HeaderLabelStyle}" />
+                <CollectionView ItemsSource="{Binding AllTomes}" SelectedItem="{Binding SelectedTome}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="viewModels:TomeViewModel">
+                            <Grid Padding="10,5" BackgroundColor="{DynamicResource Surface}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Row="0" Grid.Column="0">
+                                    <Label Text="{Binding Tome.Name}" Style="{DynamicResource HeaderLabelStyle}" />
+                                    <Label Text="{Binding Tome.UpdatedAt, StringFormat='{0:MMM dd, yyyy}'}" Style="{DynamicResource SubtleTextStyle}" />
+                                </StackLayout>
+                                <!-- Optional Tome options could go here -->
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </StackLayout>
+        </ContentView>
+
+        <BoxView Grid.Column="3" Color="{DynamicResource RuneGray}" />
+
+        <!-- Entries/Editor -->
+        <ContentView Grid.Column="4" BindingContext="{Binding ArchiveViewModel}" x:DataType="viewModels:ArchiveViewModel">
+            <StackLayout>
+                <Label Text="{Binding SelectedTome.Name, StringFormat='Entries in {0}'}" Style="{DynamicResource HeaderLabelStyle}" IsVisible="{Binding SelectedTome, Converter={StaticResource IsNotNullConverter}}" />
+                <Label Text="Select a tome to view its entries"
+                       Style="{DynamicResource SubtleTextStyle}"
+                       IsVisible="{Binding SelectedTome, Converter={StaticResource IsNullConverter}}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+                <CollectionView x:Name="EntriesCollectionView"
+                                ItemsSource="{Binding SelectedTomeEntries}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding Source={x:Reference archivePage}, Path=BindingContext.SelectedEntry}"
+                                SelectionChangedCommand="{Binding Source={x:Reference archivePage}, Path=BindingContext.SelectEntryCommand}"
+                                SelectionChangedCommandParameter="{Binding Source={x:Reference EntriesCollectionView}, Path=SelectedItem}"
+                                IsVisible="{Binding SelectedTome, Converter={StaticResource IsNotNullConverter}}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:TomeEntry">
+                            <Grid Padding="10,8" BackgroundColor="{DynamicResource Surface}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Text="{Binding Title}" Style="{DynamicResource HeaderLabelStyle}" />
+                                <Label Grid.Row="1" Text="{Binding Content}" Style="{DynamicResource SubtleTextStyle}" MaxLines="2" LineBreakMode="TailTruncation" />
+                                <Label Grid.Row="2" Text="{Binding UpdatedUtc, StringFormat='{0:MMM dd, yyyy}'}" Style="{DynamicResource SubtleTextStyle}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <!-- Markdown Editor -->
+                <Editor Text="{Binding SelectedEntry.Content, Mode=TwoWay}" 
+                        Placeholder="Write your content here... (Markdown supported)"
+                        FontSize="14" />
+                <!-- For future: add a Markdown preview below or beside the Editor -->
+            </StackLayout>
+        </ContentView>
+    </Grid>
+</ContentPage>

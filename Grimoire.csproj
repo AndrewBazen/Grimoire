@@ -26,7 +26,7 @@
 		<ApplicationTitle>Grimoire</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.grimoire</ApplicationId>
+		<ApplicationId>com.grimoire.app</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -65,13 +65,17 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<MauiXaml Update="Views\ArchivePage.xaml">
+		<MauiXaml Update="Presentation\Views\ArchivePage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Views\ThemeSettingsPage.xaml">
+		<MauiXaml Update="Presentation\Views\ThemeSettingsPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Presentation\Views\StartPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
